@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block base %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <h2>Mnums</h2>
+    <div class="card borde10" style="width: 400px; border: 1px solid #DDDFE2;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Crea una cuenta</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Nombre de usuario" 
+                           style="border: 1px solid #DDDFE2; border-radius: 10px;">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Contraseña" 
+                           style="border: 1px solid #DDDFE2; border-radius: 10px;">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-custom" style="background-color: #4FC0E8; border: none;">
+                        Registrarme
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,508 @@
+<!-- templates/calculadora/historial.html -->
+{% extends 'navegacion.html' %}
+
+{% load static %}
+
+{% block content %}
+<style>
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #091744;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.9);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(9, 23, 68, 0.2);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #091744;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .historial-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .calculo-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calculo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 192, 232, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .calculo-card:hover::before {
+            left: 100%;
+        }
+
+        .calculo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(9, 23, 68, 0.15);
+            border-color: #4FC0E8;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .metodo-info {
+            flex: 1;
+        }
+
+        .metodo-nombre {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #091744;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .calculo-card:hover .metodo-nombre {
+            color: #4FC0E8;
+        }
+
+        .fecha-calculo {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #4FC0E8, #5D9CEC);
+            color: white;
+        }
+
+        .status-error {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .card-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .parametros-section, .resultado-section {
+            background: rgba(237, 237, 237, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .calculo-card:hover .parametros-section,
+        .calculo-card:hover .resultado-section {
+            background: rgba(79, 192, 232, 0.05);
+            transform: translateX(5px);
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #091744;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .parametro-item {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            border-left: 3px solid #5D9CEC;
+        }
+
+        .parametro-label {
+            font-weight: 600;
+            color: #091744;
+            font-size: 0.9rem;
+        }
+
+        .parametro-valor {
+            color: #666;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .resultado-valor {
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .resultado-exitoso {
+            color: #2e7d32;
+            border-left: 4px solid #4FC0E8;
+        }
+
+        .resultado-error {
+            color: #d32f2f;
+            border-left: 4px solid #ff5252;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(9, 23, 68, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #091744, #5D9CEC);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(79, 192, 232, 0.1);
+            color: #091744;
+            border: 1px solid #4FC0E8;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #5D9CEC;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stats-bar {
+                gap: 15px;
+            }
+            
+            .stat-item {
+                min-width: 100px;
+                padding: 10px 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Loading animation */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+
+    <div class="container">
+        <div class="header">
+            <h1>Historial de Cálculos</h1>
+        </div>
+
+        <p>Nota: El historial se limpiará automáticamente cada semana</p>
+
+        <div class="historial-grid" id="historialGrid">
+            <!-- PARA HISTORIAL DE LOS MÈTODOS QUE UTILIZAN ECUACIONES (LA MAYORÌA DE MÈTODOS) -->
+            {% for calculo in calculo_ec %}
+                {% if not mensaje_error %}
+                    <div class="calculo-card">
+                        <div class="card-header">
+                            <div class="metodo-info">
+                                <div class="metodo-nombre">{{calculo.metodo}}</div>
+                            </div>
+                            <div class="status-badge status-success">Exitoso</div>
+                        </div>
+                    
+                        <div class="card-content">
+                            <div class="parametros-section">
+                                <div class="section-title">
+                                    Función
+                                </div>
+                                <div class="parametro-item">
+                                    <div class="parametro-label">{{calculo.ecuacion}}</div>
+                                </div>
+                            </div>
+                        
+                            <div class="resultado-section">
+                                <div class="section-title">Resultado</div>
+                                <div class="resultado-valor resultado-exitoso">
+                                    {% for llave, valor in calculo.resultado.items %}
+                                      <p><strong>{{ llave }}: {{ valor }}</strong></p>
+                                    {% endfor %}
+
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="card-footer">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary">Ver Procedimiento</button>
+                            </div>
+                        </div>
+                    </div>
+                {% elif calculo.mensaje_error %}
+                    <div class="calculo-card">
+                        <div class="card-header">
+                            <div class="metodo-info">
+                                <div class="metodo-nombre">{{calculo.metodo}}</div>
+                            </div>
+                            <div class="status-badge status-error">Error</div>
+                        </div>
+                    
+                        <div class="card-content">
+                            <div class="parametros-section">
+                                <div class="section-title">
+                                    Función
+                                </div>
+                                <div class="parametro-item">
+                                    <div class="parametro-label">{{calculo.ecuacion}}</div>
+                                </div>
+                            </div>
+                        
+                            <div class="resultado-section">
+                                <div class="section-title">
+                                    Error Generado
+                                </div>
+                                <div class="resultado-valor resultado-error">
+                                    <strong>{{calculo.mensaje_error}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="card-footer">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary"> Reintentar</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}   
+            
+            <!-- PARA HISTORIAL DE LOS MÈTODOS DE INTERPOLACIÒN (MUESTRA TODOS LOS PARÀMETROS DE ENTRADA) -->
+            {% for calculo in calculo_p %}
+                {% if not mensaje_error %}
+                    <div class="calculo-card">
+                        <div class="card-header">
+                            <div class="metodo-info">
+                                <div class="metodo-nombre">{{calculo.metodo}}</div>
+                            </div>
+                            <div class="status-badge status-success">Exitoso</div>
+                        </div>
+                    
+                        <div class="card-content">
+                            <div class="parametros-section">
+                                <div class="section-title">
+                                    Función
+                                </div>
+                                <div class="parametro-item">
+                                    <div class="parametro-label">{{calculo.parametros}}</div>
+                                </div>
+                            </div>
+                        
+                            <div class="resultado-section">
+                                <div class="section-title">Resultado</div>
+                                <div class="resultado-valor resultado-exitoso">
+                                    {% for llave, valor in calculo.resultado.items %}
+                                      <p><strong>{{ llave }}: {{ valor }}</strong></p>
+                                    {% endfor %}
+
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="card-footer">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary">Ver Procedimiento</button>
+                            </div>
+                        </div>
+                    </div>
+                {% elif calculo.mensaje_error %}
+                    <div class="calculo-card">
+                        <div class="card-header">
+                            <div class="metodo-info">
+                                <div class="metodo-nombre">{{calculo.metodo}}</div>
+                            </div>
+                            <div class="status-badge status-error">Error</div>
+                        </div>
+                    
+                        <div class="card-content">
+                            <div class="parametros-section">
+                                <div class="section-title">
+                                    Función
+                                </div>
+                                <div class="parametro-item">
+                                    <div class="parametro-label">{{calculo.ecuacion}}</div>
+                                </div>
+                            </div>
+                        
+                            <div class="resultado-section">
+                                <div class="section-title">
+                                    Error Generado
+                                </div>
+                                <div class="resultado-valor resultado-error">
+                                    <strong>{{calculo.mensaje_error}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="card-footer">
+                            <div class="action-buttons">
+                                <button class="btn btn-primary"> Reintentar</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}  
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animación de entrada para los cards
+    document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.calculo-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+</script>
+{% endblock %}

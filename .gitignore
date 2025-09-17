@@ -1,0 +1,51 @@
+# Archivos de Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Base de datos
+db.sqlite3
+*.db
+
+# Archivos de Django
+*.log
+local_settings.py
+
+# Archivos de medios y estáticos (si los generas localmente)
+/media/
+/staticfiles/
+/static/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos de testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Archivos temporales
+*.tmp
+*.bak
+
+# Migraciones (OPCIONAL - ver explicación abajo)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Archivos específicos de tu entorno local
+.python-version

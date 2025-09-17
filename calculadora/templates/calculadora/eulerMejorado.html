@@ -1,0 +1,60 @@
+{% extends 'calculadora/base.html' %}
+{% load static %}
+
+{% block formulario %}
+<form id="formulario" method="POST" action="{% url 'euler-mejorado' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Ecuación diferencial dy/dx = f(x,y):</label>
+        <input type="text" class="form-control" name="ecuacion" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{ecuacion}}" placeholder="Ejemplo: x+y" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Condición inicial x0:</label>
+        <input type="number" step="any" class="form-control" name="x0" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{x0}}" placeholder="Valor inicial de x" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Condición inicial y0:</label>
+        <input type="number" step="any" class="form-control" name="y0" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{y0}}" placeholder="Valor inicial de y" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Valor final de x:</label>
+        <input type="number" step="any" class="form-control" name="x_final" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{x_final}}" placeholder="Punto final de x" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Tamaño de paso en h:</label>
+        <input type="number" step="any" class="form-control" name="h" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{h}}" placeholder="Valor del incremento" required>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3" style="background-color: #5D9CEC; border-color: #5D9CEC;">
+        Calcular
+    </button>
+</form>
+{% endblock %}
+
+{% block resultado %}
+    {% if error %}
+    <div class="error">
+        <p>{{error}}</p>
+    </div>
+    {% endif %}
+
+    {% if resultado is not None %}
+    <div class="card borde10" style="background-color: #FFFFFF;border-color: #DDDFE2;">
+        <div class="card-header">
+            <h5 class="card-title">Resultado</h5>
+        </div>
+        <div class="card-body">
+            {% if procedimiento %}
+            <h6>Procedimiento:</h6>
+            <ul>
+                {% for paso in procedimiento %}
+                <li>{{paso|safe}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <h6>Resultado obtenido:</h6>
+            <div>{{ resultado.x_final|safe }}</div>
+            <div>{{ resultado.y_final|safe }}</div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

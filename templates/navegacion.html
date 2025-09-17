@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block base %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand logo-container" href="{% url 'index' %}">
+            <span class="logo-m">M</span>
+            <span class="logo-text">Nums</span>
+        </a>
+        
+        <!-- Botón hamburguesa para pantallas pequeñas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Contenido colapsable -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item solutions-container position-relative me-0 me-lg-4">
+                    <div class="nav-sections"><a class="nav-link text-white" href="#">Soluciones</a></div>
+                    <div class="solutions-dropdown">
+                        <a href="{% url 'derivacion' %}">Derivación</a>
+                        <a href="{% url 'euler' %}">Euler</a>
+                        <a href="{% url 'euler-mejorado' %}">Euler Mejorado</a>
+                        <a href="{% url 'interpolacion-linear' %}">Interpolación</a>
+                        <a href="{% url 'interpolacion-mejorado' %}">Interpolación Mejorado</a>
+                        <a href="{% url 'newton-raphson' %}">Newton-Raphson</a>
+                        <a href="{% url 'runge-kutta' %}">Runge Kutta</a>
+                    </div>
+                </div>
+                <div class="nav-item me-0 me-lg-4 nav-sections">
+                    <a class="nav-link text-white" href="{% url 'acerca-de' %}">Acerca de</a>
+                </div>
+                <div class="nav-item me-0 me-lg-4 nav-sections">
+                    <a class="nav-link text-white" href="{% url 'acerca-de' %}">Historial</a>
+                </div>
+                <div class="nav-item me-0 me-lg-4 nav-sections">
+                    <a class="nav-link text-white" href="{% url 'acerca-de' %}">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% block content %}
+<!-- 
+ Contenido  de plantilla que contienen:
+ # estructura de las paginas de calculos - app calculadora
+ # estructura del index, acerca de y otras páginas - proyecto general
+ # estructura del historial de usuarios - app historial
+-->
+{% endblock%}
+
+<footer class="bg-dark text-white text-center py-3 mt-4" style="background-color: #091744 !important;">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="bg-primary p-3" style="background-color: #5D9CEC !important; border-radius: 10px;">
+                    <a href="https://github.com/my-profile/mnums" target="_blank">
+                        <img src="{% static 'images/github.png' %}" alt="GitHub" style="height: 30px;">
+                    </a>
+                </div>
+                <p class="mt-2">Ezequiel Vargas. 2025.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /* Script para manejar el dropdown en dispositivos móviles
+    document.addEventListener('DOMContentLoaded', function() {
+        const solutionsLink = document.querySelector('.solutions-container > .nav-link');
+        const solutionsContainer = document.querySelector('.solutions-container');
+        
+        solutionsLink.addEventListener('click', function(e) {
+            if (window.innerWidth < 992) {
+                e.preventDefault();
+                solutionsContainer.classList.toggle('show');
+            }
+        });
+    });*/
+</script>
+{% endblock %}

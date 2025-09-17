@@ -1,0 +1,94 @@
+{% extends 'calculadora/base.html' %}
+{% load static %}
+
+{% block formulario %}
+<form id="formulario" method="POST" action="{% url 'interpolacion-linear' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Variable a encontrar:</label>
+        <select class="form-select" name="encontrar" id="encontrar" onchange="mostrarCampos()" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" required>
+            <option value="y">Encontrar y</option>
+            <option value="x">Encontrar x</option>
+            <option value="{{encontrar}}" style="display: none;"></option>
+            <option selected disabled>Selecciona un método...</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Valores de x (separados por comas):</label>
+        <input type="text" class="form-control" name="x_valores" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{x_valores}}" placeholder="Ejemplo: 1,2,3" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Valores de y (separados por comas):</label>
+        <input type="text" step="any" class="form-control" name="y_valores" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{y_valores}}" placeholder="Ejemplo: 4,6,8" required>
+    </div>
+    <div class="mb-3" id="x_buscado_div">
+        <label class="form-label">Valor de x a interpolar:</label>
+        <input type="number" step="any" class="form-control" name="x_buscado" id="x_buscado" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{x_buscado}}" placeholder="Valor a buscar de x">
+    </div>
+    <div class="mb-3" id="y_buscado_div">
+        <label class="form-label">Valor de y a interpolar:</label>
+        <input type="number" step="any" class="form-control" name="y_buscado" id="y_buscado" style="background-color: #F2F4F7; border-bottom-color: #5D9CEC;" value="{{y_buscado}}" placeholder="Valor a buscar de y">
+    </div>
+    <button type="submit" class="btn btn-primary mt-3" style="background-color: #5D9CEC; border-color: #5D9CEC;">
+        Calcular
+    </button>
+    <button type="button" onclick="limpiarCampos()" class="btn btn-primary mt-3" style="background-color: #4FC0E8; border-color: #5D9CEC;">
+        Limpiar campos
+    </button>
+</form>
+{% endblock %}
+
+{% block resultado %}
+    {% if error %}
+    <div class="error">
+        <p>{{error}}</p>
+    </div>
+    {% endif %}
+
+    {% if resultado is not None %}
+    <div class="card borde10" style="background-color: #FFFFFF;border-color: #DDDFE2;">
+        <div class="card-header">
+            <h5 class="card-title">Resultado</h5>
+        </div>
+        <div class="card-body">
+            {% if procedimiento %}
+            <h6>Procedimiento:</h6>
+            <ul>
+                {% for paso in procedimiento %}
+                <li>{{paso|safe}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <h6>Resultado obtenido:</h6>
+            <div>{{ resultado|safe }}</div>
+            <br>
+            <p><strong style="color: red">Nota:</strong>Si experimenta problemas de precisión, pruebe el método de Interpolación Mejorada.</p>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block jsExtra %}
+{{ block.super }}
+<script>
+    function mostrarCampos() {
+        var tipoInterpolacion = document.getElementById('encontrar').value;
+        var xBuscadoDiv = document.getElementById('x_buscado_div');
+        var yBuscadoDiv = document.getElementById('y_buscado_div');
+        var xBuscadoInput = document.getElementById('x_buscado');
+        var yBuscadoInput = document.getElementById('y_buscado');
+        
+        if (tipoInterpolacion === 'y') {
+            xBuscadoDiv.style.display = 'block';
+            xBuscadoInput.required = !xBuscadoInput.required;
+            yBuscadoDiv.style.display = 'none';
+        }
+
+        if (tipoInterpolacion === 'x'){
+            xBuscadoDiv.style.display = 'none';
+            yBuscadoDiv.style.display = 'block';
+            yBuscadoInput.required = !yBuscadoInput.required;
+        }
+    }
+</script>
+{% endblock %}

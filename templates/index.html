@@ -1,0 +1,97 @@
+{% extends 'navegacion.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .numeric-method-card {
+        background-color: #5D9CEC;
+        color: white;
+        transition: background-color 0.3s ease;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border: none;
+    }
+
+    .numeric-method-card:hover {
+        background-color: #091744;
+    }
+
+    .numeric-method-card img {
+        max-width: 50px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-3">Calculadora de métodos numéricos</h1>
+    <h3 class="text-center text-muted mb-5">Selecciona una opción</h3>
+
+    <div class="row g-4">
+        
+        <div class="col-md-3">
+            <a href="{% url 'derivacion' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Derivación">
+                <h5 class="text-center">Derivación</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'euler' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Euler">
+                <h5 class="text-center">Euler</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'euler-mejorado' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Euler Mejorado">
+                <h5 class="text-center">Euler Mejorado</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'interpolacion-linear' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Interpolación">
+                <h5 class="text-center">Interpolación</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <a href="{% url 'interpolacion-mejorado' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Interpolación Mejorado">
+                <h5 class="text-center">Interpolación Mejorado</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'newton-raphson' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Newton-Raphson">
+                <h5 class="text-center">Newton-Raphson</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'runge-kutta' %}" class="d-block text-decoration-none">
+            <div class="card numeric-method-card borde5">
+                <img src="{% static 'images/graphic.png' %}" alt="Runge Kutta">
+                <h5 class="text-center">Runge Kutta</h5>
+            </div>
+            </a>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+{% endblock %}

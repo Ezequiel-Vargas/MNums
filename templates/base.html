@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNums</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F2F4F7;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #091744;
+        }
+        .navbar-nav .nav-link {
+            color: white;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo-m {
+            background-color: #5D9CEC;
+            color: white;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+        .logo-text {
+            color: white;
+            font-weight: 800;
+        }
+        /* Estilos para el dropdown personalizado */
+    .solutions-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        min-width: 250px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .solutions-container:hover .solutions-dropdown {
+        display: block;
+        background-color: #091744;
+    }
+
+    .solutions-dropdown a {
+        color: #ffff;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .solutions-dropdown a:hover {
+        background-color: #5D9CEC;
+        color: white;
+    }
+
+    /* Estilos adicionales para responsividad */
+    @media (max-width: 991.98px) {
+        .solutions-dropdown {
+            position: static;
+            background-color: transparent;
+            box-shadow: none;
+            border-radius: 0;
+            min-width: 100%;
+            padding-left: 1rem;
+        }
+        
+        .solutions-container:hover .solutions-dropdown {
+            display: none; /* En móvil, preferimos que se active con click */
+        }
+        
+        .solutions-container.show .solutions-dropdown {
+            display: block;
+        }
+        .btn-custom {
+            border-radius: 5px;
+        }
+        .borde10 {
+            border-radius: 10px;
+        }
+        .borde5{
+            border-radius: 5px;
+        }
+    }
+    .nav-sections:hover{
+        background-color: #5D9CEC;
+        border-radius: 5px;
+    }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    
+    {% block base %}
+        <!-- Contenido de plantilla que contiene navbar y footer -->
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+{%extends 'navegacion.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .about-content {
+            color: #333;
+            height: 70vh;
+            margin-top: 50px;
+    }
+    .about-title {
+        color: #5D9CEC;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container flex-grow-1 d-flex align-items-center justify-content-center">
+    <div class="text-center about-content">
+        <h1 class="about-title mb-2">MNums</h1>
+        <p class="lead">Es una herramienta en línea que implementa el uso de métodos numéricos para obtener soluciones aproximadas a problemas complejos. Diseñada para ser de código abierto, funcional y operable desde un navegador web en cualquier dispositivo. Puedes acceder al código del proyecto que se encontrará en el footer o mediante el siguiente link: <a href="https://github.com/my-profile/mnums">github.com/my-profile/mnums</a></p>
+    </div>
+</div>
+{% endblock %}

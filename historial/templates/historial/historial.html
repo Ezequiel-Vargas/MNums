@@ -1,0 +1,65 @@
+<!-- templates/calculadora/historial.html -->
+{% extends 'navegacion.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Historial de Cálculos</h2>
+    
+    {% if historial %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Método</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for calculo in historial %}
+                    <tr>
+                        <td>{{ calculo.titulo }}</td>
+                        <td>{{ calculo.metodo.nombre }}</td>
+                        <td>{{ calculo.fecha_calculo|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if not calculo.mensaje_error %}
+                                <span class="badge bg-success">Exitoso</span>
+                            {% else %}
+                                <span class="badge bg-danger">No calculado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4>No hay cálculos en tu historial</h4>
+            <p>Comienza realizando algunos cálculos para ver tu historial aquí.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal para mostrar detalles rápidos -->
+<div class="modal fade" id="detalleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Cálculo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modal-content">
+                <!-- Contenido cargado dinámicamente -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}
