@@ -1,0 +1,195 @@
+[
+{
+  "model": "historial.calculo",
+  "pk": 181,
+  "fields": {
+    "id_usuario": 1,
+    "id_metodo": 7,
+    "parametros_entrada": {
+      "h": 0.1,
+      "x0": 1.0,
+      "metodo": "hacia_adelante",
+      "funcion": "2seno(z**3)",
+      "variable_derivar": "z"
+    },
+    "resultado": {
+      "derivada numerica": 2.598307671053748
+    },
+    "procedimiento": [
+      "Función: f(z) = 2seno(z**3)",
+      "Punto z0: 1.0",
+      "Tamaño de paso h: 0.1",
+      "Método: Diferencia hacia adelante",
+      "f(1.0) = 1.682941969615793",
+      "f(1.1) = 1.9427727367211678",
+      "Derivada numérica: f'(1.0) = (f(1.1) - f(1.0)) / 0.1 = 2.598307671053748",
+      "Derivada analítica: f'(1.0) = 3.2418138352088386",
+      "Error porcentual: 64.350616%"
+    ],
+    "mensaje_error": "",
+    "fecha_calculo": "2025-09-08T03:26:43.536Z"
+  }
+},
+{
+  "model": "historial.calculo",
+  "pk": 182,
+  "fields": {
+    "id_usuario": 1,
+    "id_metodo": 7,
+    "parametros_entrada": {
+      "h": 0.1,
+      "x0": 1.0,
+      "y0": 1.0,
+      "z0": 1.0,
+      "metodo": "hacia_adelante",
+      "funcion": "2seno(z**3)",
+      "variable_derivar": "z"
+    },
+    "resultado": {
+      "derivada numerica": 2.598307671053748
+    },
+    "procedimiento": [
+      "Función: f(z) = 2seno(z**3)",
+      "Punto z0: 1.0",
+      "Tamaño de paso h: 0.1",
+      "Método: Diferencia hacia adelante",
+      "f(1.0) = 1.682941969615793",
+      "f(1.1) = 1.9427727367211678",
+      "Derivada numérica: f'(1.0) = (f(1.1) - f(1.0)) / 0.1 = 2.598307671053748",
+      "Derivada analítica: f'(1.0) = 3.2418138352088386",
+      "Error porcentual: 64.350616%"
+    ],
+    "mensaje_error": "",
+    "fecha_calculo": "2025-09-08T03:28:27.854Z"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 1,
+  "fields": {
+    "nombre": "Runge-Kutta 4to Orden",
+    "descripcion": "Método numérico para resolver ecuaciones diferenciales ordinarias de primer orden mediante la aproximación iterativa de 4to orden"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 2,
+  "fields": {
+    "nombre": "Newton Raphson",
+    "descripcion": "Método numérico para encontrar el valor de raíces en ecuaciones reales no lineales"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 3,
+  "fields": {
+    "nombre": "Interpolación de Lagrange",
+    "descripcion": "Método numérico que utiliza polinomios de Lagrange para interpolar valores entre un conjunto de datos conociddos"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 4,
+  "fields": {
+    "nombre": "Interpolación linear",
+    "descripcion": "Método numérico para resolver problemas de interpolación linear"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 5,
+  "fields": {
+    "nombre": "Euler Mejorado (Heun)",
+    "descripcion": "Método numérico para resolver EDOs con mayor precisión que el método de Euler clásico"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 6,
+  "fields": {
+    "nombre": "Euler Clásico",
+    "descripcion": "Método numérico básico para resolver EDOs"
+  }
+},
+{
+  "model": "historial.categoria_metodo",
+  "pk": 7,
+  "fields": {
+    "nombre": "Derivación Numérica",
+    "descripcion": "Método numérico para estimar derivadas de funciones"
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 1,
+  "fields": {
+    "nombre": "Runge-Kutta 4to Orden",
+    "id_categoria": 1,
+    "documentacion": "​El método de Runge-Kutta es una familia de técnicas numéricas utilizadas para resolver ecuaciones diferenciales ordinarias (EDOs). Estas técnicas permiten aproximar la solución de una EDO sin necesidad de conocer su solución analítica, lo que es especialmente útil en problemas donde dicha solución es difícil o imposible de obtener."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 2,
+  "fields": {
+    "nombre": "Newton Raphson",
+    "id_categoria": 2,
+    "documentacion": "El método de Newton-Raphson es un algoritmo iterativo ampliamente utilizado en el análisis numérico para la localización de raíces de funciones reales o complejas. Este método se basa en la aproximación lineal de una función a través de la tangente en un punto de partida, obteniendo iterativamente una mejor aproximación de la raíz."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 3,
+  "fields": {
+    "nombre": "Interpolación de Lagrange",
+    "id_categoria": 3,
+    "documentacion": "La interpolación mejorada es una técnica fundamental en matemáticas y ciencias aplicadas que permite estimar valores intermedios dentro del rango de un conjunto de datos discretos. Entre los métodos más reconocidos se encuentran la interpolación de Lagrange y la interpolación de Newton."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 4,
+  "fields": {
+    "nombre": "Interpolación linear",
+    "id_categoria": 4,
+    "documentacion": "La interpolación es un método numérico que permite estimar valores intermedios de una función a partir de un conjunto discreto de datos conocidos. Consiste en construir una función que pase exactamente por estos puntos dados, facilitando la aproximación de valores donde no se tienen mediciones directas."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 5,
+  "fields": {
+    "nombre": "Euler Mejorado (Heun)",
+    "id_categoria": 5,
+    "documentacion": "El método de Euler mejorado, también conocido como método del punto medio o método de Heun, es una técnica numérica utilizada para aproximar soluciones de ecuaciones diferenciales ordinarias (EDO). Este método mejora la precisión del método de Euler clásico al considerar la pendiente en dos puntos dentro de cada intervalo, promediándolas para obtener una mejor estimación del valor siguiente de la solución."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 6,
+  "fields": {
+    "nombre": "Euler Clásico",
+    "id_categoria": 6,
+    "documentacion": "El método de Euler clásico ees un procedimiento numérico de primer orden para resolver ecuaciones diferenciales ordinarias (EDO) con un valor inicial dado. Es el método explícito más básico para la integración numérica de ecuaciones diferenciales ordinarias y es el método de Runge-Kutta más simple. Es especialmente útil cuando no es posible obtener soluciones analíticas exactas."
+  }
+},
+{
+  "model": "historial.metodo_numerico",
+  "pk": 7,
+  "fields": {
+    "nombre": "Derivación Numérica",
+    "id_categoria": 3,
+    "documentacion": "​La derivación numérica es una técnica utilizada para estimar la derivada de una función en un punto específico, especialmente cuando la función es compleja o no se dispone de su expresión analítica. Se basa en aproximaciones que emplean valores discretos de la función para calcular tasas de cambio."
+  }
+},
+{
+  "model": "usuarios.usuario",
+  "pk": 1,
+  "fields": {
+    "nombre_usuario": "dev",
+    "contrasena": "pbkdf2_sha256$720000$mF9cBpcOGwfQV43ZYM9iqu$6/1Eo3XK0ox0Cm2XX2wCmhtDmV8yJGa+EK/NEZ4mLIs=",
+    "ultima_sesion": "2025-08-29T21:12:46.166Z"
+  }
+}
+]
+

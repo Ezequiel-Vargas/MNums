@@ -1,10 +1,13 @@
+import os
+from django.core import serializers
 from django.shortcuts import render, redirect
 from json import JSONDecodeError
 from usuarios.models import usuario
 from django.contrib import messages
-from .models import calculo, metodo_numerico
+from .models import calculo, metodo_numerico, categoria_metodo
 import json
 import ast
+from django.forms.models import model_to_dict
 
 # Función auxiliar para decodificar JSON y limpiar diccionarios
 def cargarJSON(datos):
@@ -94,13 +97,35 @@ def vistaHistorial(request):
         print("No hay historial")
 
 def imprimir(request):
-    c = calculo.objects.filter(id__range=(64, 67))
+    """c = calculo.objects.filter(id__range=(64, 67))
     for obj in c:
         for field in obj._meta.fields:
             nombre = field.name
             valor = getattr(obj, nombre)
-            print(f"{nombre}: {valor}")
+            print(f"{nombre}: {valor}")"""
+    
+    c = calculo.objects.get(id = 181)
+    print("historial:", model_to_dict(c))
+    print("usuario:", model_to_dict(c.id_usuario))
+    print("metodo_numerico:", model_to_dict(c.id_metodo))
+    print("categoria_metodo:", model_to_dict(c.id_metodo.id_categoria))
 
     return redirect("/")
 
-""" LA APP DA ERROR PORQUE NO CONSIDERE DECIRLE A CHAT QUE EL MENSAJE DE ERROR PUEDE ESTAR VACIO XD """
+def create_fixtures(request):
+    # Obtener algunos registros a formatear 
+    datos = usuario.objects.all()
+    
+    # Serializar a JSON
+    serialized_data = serializers.serialize('json', datos, indent=2)
+    
+    # Crear directorio fixtures si no existe
+    os.makedirs('fixtures', exist_ok=True)
+    
+    # Guardar con encoding UTF-8
+    with open('fixtures/sample_data.json', 'w', encoding='utf-8') as f:
+        f.write(serialized_data)
+    
+    print("✅ Fixtures creados exitosamente!")
+
+    return redirect("/")

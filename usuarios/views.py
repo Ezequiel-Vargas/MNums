@@ -55,6 +55,7 @@ def registrarUsuario(request):
     return render(request, "login.html")"""
 
 def iniciarSesion(request):
+    # Inico de sesión estático
     nombre_usuario = "dev"
     password = "dev534"    
     try:

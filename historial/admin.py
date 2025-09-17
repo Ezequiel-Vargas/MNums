@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    calculo, categoria_metodo, metodo_numerico, parametro_metodo
+    calculo, categoria_metodo, metodo_numerico
 )
 from usuarios.models import usuario
 
@@ -15,19 +15,6 @@ class UsuarioAdmin(admin.ModelAdmin):
 class CategoriaMetodoAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'descripcion']
     search_fields = ['nombre']
-
-class ParametroMetodoInline(admin.TabularInline):
-    model = parametro_metodo
-    extra = 1
-
-@admin.register(metodo_numerico)
-class MetodoNumericoAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'id_categoria', 'documentacion']
-    list_filter = ['id_categoria']
-    search_fields = ['nombre', 'id']
-    readonly_fields = ['documentacion', 'id']
-    inlines = [ParametroMetodoInline]
-
 @admin.register(calculo)
 class CalculoAdmin(admin.ModelAdmin):
     list_display = ['parametros_entrada', 'id_usuario', 'id_metodo', 'resultado', 'procedimiento', 'mensaje_error', 'fecha_calculo']
