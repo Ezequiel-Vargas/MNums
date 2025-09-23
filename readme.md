@@ -3,6 +3,7 @@
 # Requerimientos previos:
 * Python
 * Django - Framework
+* PostgreSQL
 
 # Instalación:
 1.- Clonar el repositorio
