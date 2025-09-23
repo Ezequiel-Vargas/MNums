@@ -43,9 +43,9 @@ htmlcov/
 *.tmp
 *.bak
 
-# Migraciones (OPCIONAL - ver explicación abajo)
+# Migraciones
 # */migrations/*.py
 # !*/migrations/__init__.py
 
-# Archivos específicos de tu entorno local
+# Archivos locales
 .python-version
