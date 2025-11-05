@@ -4,14 +4,14 @@ orbs:
   python: circleci/python@3.0.0
 
 executors:
-  python/default:
+  my-executor:
     docker:
       - image: cimg/python:3.12
     working_directory: ~/repo
 
 jobs:
   checkout_code:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
       - run:
@@ -21,32 +21,35 @@ jobs:
             pip --version
 
   install_deps:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-
       - run:
           name: Crear venv e instalar requirements
           command: |
             python -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            pip install -r requirements.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - venv
 
   run_tests:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
-      - run:
-          name: Activar venv e instalar deps
-          command: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install --upgrade pip
-            if [ -f requirements.txt ]; then
-              pip install -r requirements.txt
-            else
-              pip install "Django>=4.2,<5"
-            fi
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: Ejecutar migrations
           command: |
@@ -64,7 +67,7 @@ jobs:
             fi
 
   build_artifact:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
       - run:
@@ -75,34 +78,47 @@ jobs:
       - store_artifacts:
           path: release-*.zip
           destination: release-zip
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - release-*.zip
+            - VERSION.txt
 
   create_github_release_and_upload:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/repo
       - run:
-          name: Crear zip de artefacto
-          command: |
-            git rev-parse --short HEAD > VERSION.txt || true
-            zip -r release-$(cat VERSION.txt).zip . -x ".git/*" "venv/*" ".circleci/*"
-      - run:
-          name: Crear release en GitHub (API) y subir zip
+          name: Crear release en GitHub y subir zip
           command: |
             set -e
             TAG="ci-$(git rev-parse --short HEAD)"
             BODY="Release creada por pipeline de CircleCI."
             OWNER_REPO="Ezequiel-Vargas/MNums"
-            # Create release (uses GITHUB_TOKEN env var in CircleCI)
-            RESP=$(curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -d '{"tag_name":"'"${TAG}"'","name":"'"${TAG}"'","body":"'"${BODY}"'","prerelease":true}' https://api.github.com/repos/${OWNER_REPO}/releases)
+            
+            RESP=$(curl -s -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -d "{\"tag_name\":\"${TAG}\",\"name\":\"${TAG}\",\"body\":\"${BODY}\",\"prerelease\":true}" \
+              https://api.github.com/repos/${OWNER_REPO}/releases)
+            
             UPLOAD_URL=$(echo "$RESP" | python -c "import sys, json; print(json.load(sys.stdin).get('upload_url','').split('{')[0])")
-            if [ -z "$UPLOAD_URL" ]; then echo "Failed to create release: $RESP"; exit 1; fi
-            curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/zip" --data-binary @release-$(cat VERSION.txt).zip "${UPLOAD_URL}?name=release-$(cat VERSION.txt).zip"
-
-  hold_for_approval:
-    type: approval
+            
+            if [ -z "$UPLOAD_URL" ]; then 
+              echo "Failed to create release: $RESP"
+              exit 1
+            fi
+            
+            curl -s -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Content-Type: application/zip" \
+              --data-binary @release-$(cat VERSION.txt).zip \
+              "${UPLOAD_URL}?name=release-$(cat VERSION.txt).zip"
 
   deploy_simulated:
-    executor: python/default
+    executor: my-executor
     steps:
       - checkout
       - run:
