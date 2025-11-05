@@ -1,0 +1,127 @@
+version: 2.1
+
+executors:
+  python/default:
+    docker:
+      - image: cimg/python:3.12
+    working_directory: ~/repo
+
+jobs:
+  checkout_code:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Show python and pip
+          command: |
+            python --version
+            pip --version
+
+  install_deps:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Crear venv e instalar requirements
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+  run_tests:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Activar venv e instalar deps
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - run:
+          name: Ejecutar migrations (si usan sqlite o config de tests)
+          command: |
+            . venv/bin/activate
+            python manage.py migrate --noinput || true
+      - run:
+          name: Ejecutar tests de Django
+          command: |
+            . venv/bin/activate
+            python manage.py test --verbosity=2
+
+  build_artifact:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Crear zip de release (artifact)
+          command: |
+            git rev-parse --short HEAD > VERSION.txt || true
+            zip -r release-$(cat VERSION.txt).zip . -x ".git/*" "venv/*" ".circleci/*"
+      - store_artifacts:
+          path: release-*.zip
+          destination: release-zip
+
+  create_github_release_and_upload:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Crear zip de artefacto
+          command: |
+            git rev-parse --short HEAD > VERSION.txt || true
+            zip -r release-$(cat VERSION.txt).zip . -x ".git/*" "venv/*" ".circleci/*"
+      - run:
+          name: Crear release en GitHub (API) y subir zip
+          command: |
+            set -e
+            TAG="ci-$(git rev-parse --short HEAD)"
+            BODY="Release creada por pipeline de CircleCI."
+            OWNER_REPO="Ezequiel-Vargas/MNums"
+            # Create release (uses GITHUB_TOKEN env var in CircleCI)
+            RESP=$(curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -d '{"tag_name":"'"${TAG}"'","name":"'"${TAG}"'","body":"'"${BODY}"'","prerelease":true}' https://api.github.com/repos/${OWNER_REPO}/releases)
+            UPLOAD_URL=$(echo "$RESP" | python -c "import sys, json; print(json.load(sys.stdin).get('upload_url','').split('{')[0])")
+            if [ -z "$UPLOAD_URL" ]; then echo "Failed to create release: $RESP"; exit 1; fi
+            curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/zip" --data-binary @release-$(cat VERSION.txt).zip "${UPLOAD_URL}?name=release-$(cat VERSION.txt).zip"
+
+  hold_for_approval:
+    type: approval
+
+  deploy_simulated:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Deploy simulado
+          command: |
+            echo "Simulación de despliegue"
+            echo "Script de despliegue."
+            echo "Se ha aprobado la release y se ejecuta el deploy simulado."
+
+workflows:
+  version: 2
+  ci_pipeline:
+    jobs:
+      - checkout_code
+      - install_deps:
+          requires:
+            - checkout_code
+      - run_tests:
+          requires:
+            - install_deps
+      - build_artifact:
+          requires:
+            - run_tests
+      - create_github_release_and_upload:
+          requires:
+            - build_artifact
+      - hold_for_approval:
+          type: approval
+          requires:
+            - create_github_release_and_upload
+      - deploy_simulated:
+          requires:
+            - hold_for_approval
+
