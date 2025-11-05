@@ -39,24 +39,33 @@ jobs:
             python -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            else
+              pip install "Django>=4.2,<5"
+            fi
       - run:
-          name: Ejecutar migrations (si usan sqlite o config de tests)
+          name: Ejecutar migrations
           command: |
             . venv/bin/activate
+            export DJANGO_SETTINGS_MODULE=MNums.settings
             python manage.py migrate --noinput || true
       - run:
-          name: Ejecutar tests de Django
+          name: Ejecutar tests si existen
           command: |
             . venv/bin/activate
-            python manage.py test --verbosity=2
+            if git ls-files | grep -E '(^|/)tests?(/|$)|(^|/)test_.*\.py' >/dev/null 2>&1; then
+              python manage.py test --verbosity=2
+            else
+              echo "No tests found, skipping."
+            fi
 
   build_artifact:
     executor: python/default
     steps:
       - checkout
       - run:
-          name: Crear zip de release (artifact)
+          name: Crear zip de release
           command: |
             git rev-parse --short HEAD > VERSION.txt || true
             zip -r release-$(cat VERSION.txt).zip . -x ".git/*" "venv/*" ".circleci/*"

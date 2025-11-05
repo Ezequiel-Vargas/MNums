@@ -17,6 +17,10 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Detectar si estamos en CI (CircleCI establece CI=true).
+# También puedes forzar localmente exportando USE_SQLITE=true.
+IS_CI = os.environ.get("CI", "").lower() in ("1","true","yes")
+USE_SQLITE = os.environ.get("USE_SQLITE", "").lower() in ("1","true","yes")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -25,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=(True if IS_CI else False), cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -87,17 +91,26 @@ WSGI_APPLICATION = 'MNums.wsgi.application'
 
 
 #AUTH_USER_MODEL = 'usuarios.usuario'  Modelo de usuario personalizado
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', cast=int),
+# En CI o cuando USE_SQLITE esté activo, usar SQLite para simplificar tests/CI.
+if IS_CI or USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # Configuración por defecto para desarrollo/producción (Postgres)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', cast=int),
+        }
+    }
 
 
 # Password validation
